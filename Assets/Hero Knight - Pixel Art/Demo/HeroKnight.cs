@@ -6,7 +6,7 @@ public class HeroKnight : MonoBehaviour {
     [SerializeField] float      m_speed = 5.0f;
     [SerializeField] float      m_jumpForce = 8.0f;
     [SerializeField] float      m_rollForce = 6.0f;
-    [SerializeField] bool       m_noBlood = false;
+    //[SerializeField] bool       m_noBlood = false;
     [SerializeField] GameObject m_slideDust;
     [SerializeField] private float invincibilityDurationSeconds =0.75f;
     [SerializeField] private float invincibilityDeltaTime =0.15f;
@@ -32,7 +32,7 @@ public class HeroKnight : MonoBehaviour {
     public float attackRange = 0.5f;
     public LayerMask enemyLayers;
 
-    public int attackDamage = 40;
+    public int attackDamage = 35;
 
     public int maxHealth = 100;
     int currentHealth;
@@ -249,6 +249,14 @@ public class HeroKnight : MonoBehaviour {
         StartCoroutine(BecomeTemporarilyInvincible());
     }
 
+    public bool checkIfDead(){
+        if (isDead){
+            return true;
+        } else{
+            return false;
+        }
+    }
+
     private IEnumerator BecomeTemporarilyInvincible()
     {
         Debug.Log("Player turned invincible!");
@@ -268,13 +276,13 @@ public class HeroKnight : MonoBehaviour {
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
             foreach(Collider2D enemy in hitEnemies){
                 Debug.Log("hit");
-                enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
+                enemy.GetComponent<EnemyMove>().TakeDamage(attackDamage);
             }
         } else if(m_facingDirection == -1){
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPointBehind.position, attackRange, enemyLayers);
             foreach(Collider2D enemy in hitEnemies){
                 Debug.Log("hit behind");
-                enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
+                enemy.GetComponent<EnemyMove>().TakeDamage(attackDamage);
             }
         }
     }
