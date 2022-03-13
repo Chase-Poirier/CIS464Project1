@@ -6,6 +6,9 @@ public class Enemy : MonoBehaviour
 {
     public Animator animator;
     public int maxHealth = 100;
+
+    public float attackRadius = 2.5f;
+    public float followRadius = 5.0f;
     int currentHealth;
     // Start is called before the first frame update
     void Start()
@@ -29,6 +32,34 @@ public class Enemy : MonoBehaviour
 
         GetComponent<Collider2D>().enabled = false;
         this.enabled = false;
+    }
+
+    //if player in radius move toward him 
+    public bool checkFollowRadius(float playerPosition, float enemyPosition)
+    {
+        if(Mathf.Abs(playerPosition -enemyPosition) < followRadius)
+        {
+            //player in range
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    //if player in radius attack him
+    public bool checkAttackRadius(float playerPosition, float enemyPosition)
+    {
+        if (Mathf.Abs(playerPosition - enemyPosition) < attackRadius)
+        {
+            //in range for attack
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
 }

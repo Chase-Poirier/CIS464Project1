@@ -3,12 +3,13 @@ using System.Collections;
 
 public class HeroKnight : MonoBehaviour {
 
-    [SerializeField] float      m_speed = 4.0f;
-    [SerializeField] float      m_jumpForce = 7.5f;
+    [SerializeField] float      m_speed = 5.0f;
+    [SerializeField] float      m_jumpForce = 8.0f;
     [SerializeField] float      m_rollForce = 6.0f;
     [SerializeField] bool       m_noBlood = false;
     [SerializeField] GameObject m_slideDust;
-
+    [SerializeField] private float invincibilityDurationSeconds =0.75f;
+    [SerializeField] private float invincibilityDeltaTime =0.15f;
     private Animator            m_animator;
     private Rigidbody2D         m_body2d;
     private Sensor_HeroKnight   m_groundSensor;
@@ -33,9 +34,16 @@ public class HeroKnight : MonoBehaviour {
 
     public int attackDamage = 40;
 
+    public int maxHealth = 100;
+    int currentHealth;
+    private bool isInvincible = false;
+
+    private bool isDead = false;
+
     // Use this for initialization
     void Start ()
     {
+        currentHealth = maxHealth;
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_HeroKnight>();
@@ -104,13 +112,13 @@ public class HeroKnight : MonoBehaviour {
         //Death
         if (Input.GetKeyDown("e") && !m_rolling)
         {
-            m_animator.SetBool("noBlood", m_noBlood);
-            m_animator.SetTrigger("Death");
+            //m_animator.SetBool("noBlood", m_noBlood);
+            //m_animator.SetTrigger("Death");
         }
             
         //Hurt
-        else if (Input.GetKeyDown("q") && !m_rolling)
-            m_animator.SetTrigger("Hurt");
+        else if (Input.GetKeyDown("q") && !m_rolling){}
+            //m_animator.SetTrigger("Hurt");
 
         //Attack
         else if(Input.GetMouseButtonDown(0) && m_timeSinceAttack > 0.25f && !m_rolling)
@@ -200,34 +208,84 @@ public class HeroKnight : MonoBehaviour {
         }
     }
 
+
     void OnCollisionEnter2D(Collision2D col) {
         if(col.gameObject.tag == "Enemy")
         {
             Debug.Log("I have collided!");
+            LoseHealth(20);
+            m_body2d.AddForce(col.contacts[0].normal * 300f);
         }
     }
 
+    private IEnumerator Hitstun(){
+        this.enabled=false;
+        yield return new WaitForSeconds(.5f);
+        if(!isDead)
+            this.enabled=true;
+    }
+
+    public void LoseHealth(int amount)
+    {
+        if (isInvincible) return;
+        StartCoroutine(Hitstun());
+        currentHealth -= amount;
+        m_animator.SetTrigger("Hurt");
+        Debug.Log("Health=" + currentHealth);
+
+        // The player died
+        if (currentHealth <= 0)
+        {
+            isDead = true;
+            currentHealth = 0;
+            Debug.Log("Death");
+            //m_animator.SetBool("noBlood", m_noBlood);
+            m_animator.SetTrigger("Death");
+            this.enabled=false;
+            // Broadcast some sort of death event here before returning
+            return;
+        }
+
+        StartCoroutine(BecomeTemporarilyInvincible());
+    }
+
+    private IEnumerator BecomeTemporarilyInvincible()
+    {
+        Debug.Log("Player turned invincible!");
+        isInvincible = true;
+
+        for (float i = 0; i < invincibilityDurationSeconds; i += invincibilityDeltaTime)
+        {
+            // TODO: add any logic we want here
+            yield return new WaitForSeconds(invincibilityDeltaTime);
+        }
+
+        Debug.Log("Player is no longer invincible!");
+        isInvincible = false;
+    }
     void Attack(){
         if(m_facingDirection == 1){
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
             foreach(Collider2D enemy in hitEnemies){
-                Debug.Log("Boingo");
+                Debug.Log("hit");
                 enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
             }
         } else if(m_facingDirection == -1){
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPointBehind.position, attackRange, enemyLayers);
             foreach(Collider2D enemy in hitEnemies){
-                Debug.Log("Boingo behind");
+                Debug.Log("hit behind");
                 enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
             }
         }
+    }
+
+
+
     /*
     void OnDrawGizmosSelected(){
         if (attackPoint == null)
             return;
         Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
-    */
-
-    }
+*/
 }
