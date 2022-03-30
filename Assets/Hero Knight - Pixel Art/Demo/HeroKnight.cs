@@ -51,6 +51,25 @@ public class HeroKnight : MonoBehaviour {
         m_wallSensorR2 = transform.Find("WallSensor_R2").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL1 = transform.Find("WallSensor_L1").GetComponent<Sensor_HeroKnight>();
         m_wallSensorL2 = transform.Find("WallSensor_L2").GetComponent<Sensor_HeroKnight>();
+
+        InvokeRepeating("HealthBurn", 1f, 1f);  //1s delay, repeat every 1s
+    }
+
+    void HealthBurn(){
+        currentHealth -= 1;
+        Debug.Log(currentHealth);
+
+        if (currentHealth <= 0 && !isDead)
+        {
+            isDead = true;
+            currentHealth = 0;
+            Debug.Log("Death");
+            //m_animator.SetBool("noBlood", m_noBlood);
+            m_animator.SetTrigger("Death");
+            this.enabled=false;
+            // Broadcast some sort of death event here before returning
+            return;
+        }
     }
 
     // Update is called once per frame
@@ -109,19 +128,8 @@ public class HeroKnight : MonoBehaviour {
         m_isWallSliding = (m_wallSensorR1.State() && m_wallSensorR2.State()) || (m_wallSensorL1.State() && m_wallSensorL2.State());
         m_animator.SetBool("WallSlide", m_isWallSliding);
 
-        //Death
-        if (Input.GetKeyDown("e") && !m_rolling)
-        {
-            //m_animator.SetBool("noBlood", m_noBlood);
-            //m_animator.SetTrigger("Death");
-        }
-            
-        //Hurt
-        else if (Input.GetKeyDown("q") && !m_rolling){}
-            //m_animator.SetTrigger("Hurt");
-
         //Attack
-        else if(Input.GetMouseButtonDown(0) && m_timeSinceAttack > 0.25f && !m_rolling)
+        if(Input.GetMouseButtonDown(0) && m_timeSinceAttack > 0.25f && !m_rolling)
         {
             m_currentAttack++;
             Attack();
@@ -157,8 +165,7 @@ public class HeroKnight : MonoBehaviour {
             m_rolling = true;
             m_animator.SetTrigger("Roll");
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
-        }
-            
+        }  
 
         //Jump
         else if (Input.GetKeyDown("space") && m_grounded && !m_rolling)
@@ -247,6 +254,14 @@ public class HeroKnight : MonoBehaviour {
         }
 
         StartCoroutine(BecomeTemporarilyInvincible());
+    }
+
+    public void GainHealth(int amount){
+        currentHealth += amount;
+        if(currentHealth>maxHealth){
+            currentHealth=maxHealth;
+        }
+        Debug.Log("Gained health, new health=" + currentHealth);
     }
 
     public bool checkIfDead(){

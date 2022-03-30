@@ -9,6 +9,7 @@ public class EnemyMove : MonoBehaviour
     public int attackDamage = 20;
     private float timeSinceAttack = 0.0f;
     private int facingDirection = 1;
+    private int healthBounty = 30;
     [SerializeField] Transform playerTransform;
     [SerializeField]Animator enemyAnim;
     SpriteRenderer enemySR;
@@ -47,6 +48,7 @@ public class EnemyMove : MonoBehaviour
                 {
                     //for attack animation
                     if (timeSinceAttack > 2.0f && !playerHasDied){
+                        enemyAnim.SetBool("IsWalking", false);
                         enemyAnim.SetTrigger("Attack");
                         Attack();
                         timeSinceAttack = 0.0f;
@@ -58,7 +60,7 @@ public class EnemyMove : MonoBehaviour
                     //for attack animation
                     //enemyAnim.SetBool("Attack", false);
                     //walk
-                    //enemyAnim.SetBool("Walking", true);
+                    enemyAnim.SetBool("IsWalking", true);
                     enemySR.flipX = true;
                     facingDirection = -1;
                 }
@@ -71,6 +73,7 @@ public class EnemyMove : MonoBehaviour
                 {
                     //for attack animation
                     if (timeSinceAttack > 2.0f && !playerHasDied){
+                        enemyAnim.SetBool("IsWalking", false);
                         enemyAnim.SetTrigger("Attack");
                         Attack();
                         timeSinceAttack = 0.0f;
@@ -82,7 +85,7 @@ public class EnemyMove : MonoBehaviour
                     //for attack animation
                     //enemyAnim.SetBool("Attack", false);
                     //walk
-                    //enemyAnim.SetBool("Walking", true);
+                    enemyAnim.SetBool("IsWalking", true);
                     enemySR.flipX = false;
                     facingDirection = 1;
                 }
@@ -90,7 +93,7 @@ public class EnemyMove : MonoBehaviour
         }
         else
         {
-            //enemyAnim.SetBool("Walking", false);
+            enemyAnim.SetBool("IsWalking", false);
         }
     }
     void Attack(){
@@ -127,6 +130,8 @@ public class EnemyMove : MonoBehaviour
     void Die(){
         Debug.Log("dead");
         animator.SetBool("IsDead", true);
+
+        GameObject.FindWithTag("Player").GetComponent<HeroKnight>().GainHealth(healthBounty);
 
         //GetComponent<Collider2D>().enabled = false;
         Destroy(this.gameObject, .55f);
