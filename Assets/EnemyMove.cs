@@ -8,6 +8,7 @@ public class EnemyMove : MonoBehaviour
     public float attackRange = 1.5f;
     public int attackDamage = 20;
     private float timeSinceAttack = 0.0f;
+    private float attackDelay = 0.2f;
     private int facingDirection = 1;
     private int healthBounty = 30;
     [SerializeField] Transform playerTransform;
@@ -50,7 +51,8 @@ public class EnemyMove : MonoBehaviour
                     if (timeSinceAttack > 2.0f && !playerHasDied){
                         enemyAnim.SetBool("IsWalking", false);
                         enemyAnim.SetTrigger("Attack");
-                        Attack();
+                        //Attack();
+                        StartCoroutine(DelayedAttack(attackDelay));
                         timeSinceAttack = 0.0f;
                     }
                 }
@@ -75,7 +77,8 @@ public class EnemyMove : MonoBehaviour
                     if (timeSinceAttack > 2.0f && !playerHasDied){
                         enemyAnim.SetBool("IsWalking", false);
                         enemyAnim.SetTrigger("Attack");
-                        Attack();
+                        //Attack();
+                        StartCoroutine(DelayedAttack(attackDelay));
                         timeSinceAttack = 0.0f;
                     }
                 }
@@ -116,6 +119,11 @@ public class EnemyMove : MonoBehaviour
                 }
             }
         }
+    }
+
+    private IEnumerator DelayedAttack(float frames){
+        yield return new WaitForSeconds(frames);
+        Attack();
     }
 
     public void TakeDamage(int damage){
