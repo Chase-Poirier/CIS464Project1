@@ -27,7 +27,7 @@ public class EnemyMove : MonoBehaviour
 
     void Start()
     {
-      //get the player transform   
+      //get the player transform
         playerTransform = GameObject.FindWithTag("Player").GetComponent<Transform>();
       //enemy animation and sprite renderer 
         enemyAnim = gameObject.GetComponent<Animator>();
@@ -38,6 +38,9 @@ public class EnemyMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(GameObject.FindWithTag("Player").GetComponent<HeroKnight>().checkIfDead()){
+                    playerHasDied = true;
+        }
         timeSinceAttack += Time.deltaTime;
         if (checkFollowRadius(playerTransform.position.x,transform.position.x))
         {
@@ -104,19 +107,16 @@ public class EnemyMove : MonoBehaviour
             Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPointRight.position, attackRange, playerLayers);
             foreach(Collider2D player in hitPlayers){
                 Debug.Log("hit player");
+                if(player.GetComponent<HeroKnight>().CheckBlocking(facingDirection)){return;}
                 player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
-                if(player.GetComponent<HeroKnight>().checkIfDead()){
-                    playerHasDied = true;
-                }
+                
             }
         } else if(facingDirection == -1){
             Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPointLeft.position, attackRange, playerLayers);
             foreach(Collider2D player in hitPlayers){
                 Debug.Log("hit player behind");
+                if(player.GetComponent<HeroKnight>().CheckBlocking(facingDirection)){return;}
                 player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
-                if(player.GetComponent<HeroKnight>().checkIfDead()){
-                    playerHasDied = true;
-                }
             }
         }
     }

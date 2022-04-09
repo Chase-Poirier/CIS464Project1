@@ -5,7 +5,7 @@ public class HeroKnight : MonoBehaviour {
 
     [SerializeField] float      m_speed = 5.0f;
     [SerializeField] float      m_jumpForce = 8.0f;
-    [SerializeField] float      m_rollForce = 6.0f;
+    [SerializeField] float      m_rollForce = 8.0f;
     //[SerializeField] bool       m_noBlood = false;
     [SerializeField] GameObject m_slideDust;
     [SerializeField] private float invincibilityDurationSeconds =0.75f;
@@ -20,6 +20,7 @@ public class HeroKnight : MonoBehaviour {
     private bool                m_isWallSliding = false;
     private bool                m_grounded = false;
     private bool                m_rolling = false;
+    private bool                m_blocking = false;
     private int                 m_facingDirection = 1;
     private int                 m_currentAttack = 0;
     private float               m_timeSinceAttack = 0.0f;
@@ -61,13 +62,7 @@ public class HeroKnight : MonoBehaviour {
 
         if (currentHealth <= 0 && !isDead)
         {
-            isDead = true;
-            currentHealth = 0;
-            Debug.Log("Death");
-            //m_animator.SetBool("noBlood", m_noBlood);
-            m_animator.SetTrigger("Death");
-            this.enabled=false;
-            // Broadcast some sort of death event here before returning
+            Die();
             return;
         }
     }
@@ -117,8 +112,11 @@ public class HeroKnight : MonoBehaviour {
         }
 
         // Move
-        if (!m_rolling )
+        if (!m_rolling && !m_blocking){
             m_body2d.velocity = new Vector2(inputX * m_speed, m_body2d.velocity.y);
+        } else if(m_blocking && m_grounded){
+            m_body2d.velocity = new Vector2(0 * m_speed, m_body2d.velocity.y);
+        }
 
         //Set AirSpeed in animator
         m_animator.SetFloat("AirSpeedY", m_body2d.velocity.y);
@@ -129,10 +127,11 @@ public class HeroKnight : MonoBehaviour {
         m_animator.SetBool("WallSlide", m_isWallSliding);
 
         //Attack
-        if(Input.GetMouseButtonDown(0) && m_timeSinceAttack > 0.25f && !m_rolling)
+        if(Input.GetKeyDown("j") && m_timeSinceAttack > 0.25f && !m_rolling)
         {
             m_currentAttack++;
             Attack();
+            m_blocking = false;
 
             // Loop back to one after third attack
             if (m_currentAttack > 3)
@@ -150,19 +149,23 @@ public class HeroKnight : MonoBehaviour {
         }
 
         // Block
-        else if (Input.GetMouseButtonDown(1) && !m_rolling)
+        else if (Input.GetKeyDown("k") && !m_rolling)
         {
             m_animator.SetTrigger("Block");
             m_animator.SetBool("IdleBlock", true);
+            m_blocking = true;
         }
 
-        else if (Input.GetMouseButtonUp(1))
+        else if (Input.GetKeyUp("k")){
             m_animator.SetBool("IdleBlock", false);
+            m_blocking = false;
+        }
 
         // Roll
         else if (Input.GetKeyDown("left shift") && !m_rolling && !m_isWallSliding)
         {
             m_rolling = true;
+            m_blocking = false;
             m_animator.SetTrigger("Roll");
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
         }  
@@ -221,7 +224,9 @@ public class HeroKnight : MonoBehaviour {
         {
             Debug.Log("I have collided!");
             LoseHealth(20);
-            m_body2d.AddForce(col.contacts[0].normal * 300f);
+            if(!isDead){
+                m_body2d.AddForce(col.contacts[0].normal * 300f);
+            }
         }
     }
 
@@ -232,10 +237,10 @@ public class HeroKnight : MonoBehaviour {
             this.enabled=true;
     }
 
-    public void LoseHealth(int amount)
-    {
+    public void LoseHealth(int amount){
         if (isInvincible) return;
         StartCoroutine(Hitstun());
+        m_blocking = false;
         currentHealth -= amount;
         m_animator.SetTrigger("Hurt");
         Debug.Log("Health=" + currentHealth);
@@ -243,17 +248,30 @@ public class HeroKnight : MonoBehaviour {
         // The player died
         if (currentHealth <= 0)
         {
-            isDead = true;
-            currentHealth = 0;
-            Debug.Log("Death");
-            //m_animator.SetBool("noBlood", m_noBlood);
-            m_animator.SetTrigger("Death");
-            this.enabled=false;
-            // Broadcast some sort of death event here before returning
+            Die();
             return;
         }
 
         StartCoroutine(BecomeTemporarilyInvincible());
+    }
+
+    private void Die(){
+        isDead = true;
+        currentHealth = 0;
+        Debug.Log("Death");
+        //m_animator.SetBool("noBlood", m_noBlood);
+        m_animator.SetTrigger("Death");
+        this.enabled=false;
+        // Broadcast some sort of death event here before returning
+        return;
+    }
+
+    public bool CheckBlocking(int facing){
+        if(m_facingDirection!=facing && m_blocking){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void GainHealth(int amount){
@@ -301,14 +319,4 @@ public class HeroKnight : MonoBehaviour {
             }
         }
     }
-
-
-
-    /*
-    void OnDrawGizmosSelected(){
-        if (attackPoint == null)
-            return;
-        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
-    }
-*/
 }
