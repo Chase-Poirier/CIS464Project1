@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyMove : MonoBehaviour
 {
@@ -101,6 +102,7 @@ public class EnemyMove : MonoBehaviour
                 player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
                 if(player.GetComponent<HeroKnight>().checkIfDead()){
                     playerHasDied = true;
+                    SceneManager.LoadScene(0);
                 }
             }
         } else if(facingDirection == -1){
@@ -110,6 +112,7 @@ public class EnemyMove : MonoBehaviour
                 player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
                 if(player.GetComponent<HeroKnight>().checkIfDead()){
                     playerHasDied = true;
+                    SceneManager.LoadScene(0);
                 }
             }
         }
