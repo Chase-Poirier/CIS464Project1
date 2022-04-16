@@ -225,7 +225,7 @@ public class HeroKnight : MonoBehaviour {
             Debug.Log("I have collided!");
             LoseHealth(20);
             if(!isDead){
-                m_body2d.AddForce(col.contacts[0].normal * 300f);
+                m_body2d.AddForce(col.contacts[0].normal * 50f);
             }
         }
     }
@@ -309,13 +309,25 @@ public class HeroKnight : MonoBehaviour {
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
             foreach(Collider2D enemy in hitEnemies){
                 Debug.Log("hit");
-                enemy.GetComponent<EnemyMove>().TakeDamage(attackDamage);
+                if(enemy.GetComponent<EnemyMove>() != null){
+                    enemy.GetComponent<EnemyMove>().TakeDamage(attackDamage);
+                } else if(enemy.GetComponentInChildren<FlyingEnemySprite>() != null) {
+                    enemy.GetComponentInChildren<FlyingEnemySprite>().TakeDamage(attackDamage);
+                } else{
+                    return;
+                }
             }
         } else if(m_facingDirection == -1){
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPointBehind.position, attackRange, enemyLayers);
             foreach(Collider2D enemy in hitEnemies){
                 Debug.Log("hit behind");
-                enemy.GetComponent<EnemyMove>().TakeDamage(attackDamage);
+                if(enemy.GetComponent<EnemyMove>() != null){
+                    enemy.GetComponent<EnemyMove>().TakeDamage(attackDamage);
+                } else if(enemy.GetComponentInChildren<FlyingEnemySprite>() != null) {
+                    enemy.GetComponentInChildren<FlyingEnemySprite>().TakeDamage(attackDamage);
+                } else{
+                    return;
+                }
             }
         }
     }
