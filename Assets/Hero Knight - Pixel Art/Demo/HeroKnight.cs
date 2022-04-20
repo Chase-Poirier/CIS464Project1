@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class HeroKnight : MonoBehaviour {
 
@@ -266,8 +267,14 @@ public class HeroKnight : MonoBehaviour {
         //m_animator.SetBool("noBlood", m_noBlood);
         m_animator.SetTrigger("Death");
         this.enabled=false;
+        StartCoroutine(DeathTransition());
         // Broadcast some sort of death event here before returning
         return;
+    }
+
+    private IEnumerator DeathTransition(){
+        yield return new WaitForSeconds(3.5f);
+        SceneManager.LoadScene(0);
     }
 
     public bool CheckBlocking(int facing){
