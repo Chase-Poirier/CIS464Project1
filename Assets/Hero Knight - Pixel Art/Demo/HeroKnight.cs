@@ -40,11 +40,13 @@ public class HeroKnight : MonoBehaviour {
     private bool isInvincible = false;
 
     private bool isDead = false;
+    public HealthBar healthBar;
 
     // Use this for initialization
     void Start ()
     {
         currentHealth = maxHealth;
+        healthBar.SetMaxHealth(maxHealth);
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_HeroKnight>();
@@ -58,6 +60,7 @@ public class HeroKnight : MonoBehaviour {
 
     void HealthBurn(){
         currentHealth -= 1;
+        healthBar.SetHealth(currentHealth);
         Debug.Log(currentHealth);
 
         if (currentHealth <= 0 && !isDead)
@@ -242,6 +245,7 @@ public class HeroKnight : MonoBehaviour {
         StartCoroutine(Hitstun());
         m_blocking = false;
         currentHealth -= amount;
+        healthBar.SetHealth(currentHealth);
         m_animator.SetTrigger("Hurt");
         Debug.Log("Health=" + currentHealth);
 
@@ -276,6 +280,7 @@ public class HeroKnight : MonoBehaviour {
 
     public void GainHealth(int amount){
         currentHealth += amount;
+        healthBar.SetHealth(currentHealth);
         if(currentHealth>maxHealth){
             currentHealth=maxHealth;
         }
