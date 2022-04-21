@@ -232,6 +232,9 @@ public class HeroKnight : MonoBehaviour {
                 m_body2d.AddForce(col.contacts[0].normal * 50f);
             }
         }
+        if(col.gameObject.tag == "Transition"){
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
     }
 
     private IEnumerator Hitstun(){
