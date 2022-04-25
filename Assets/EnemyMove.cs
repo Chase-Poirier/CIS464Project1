@@ -108,6 +108,7 @@ public class EnemyMove : MonoBehaviour
                 Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPointRight.position, attackRange, playerLayers);
                 foreach(Collider2D player in hitPlayers){
                     Debug.Log("hit player");
+                    FindObjectOfType<AudioManager>().Play("EnemyAttack");
                     if(player.GetComponent<HeroKnight>().CheckBlocking(facingDirection)){return;}
                     player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
                     
@@ -116,6 +117,7 @@ public class EnemyMove : MonoBehaviour
                 Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPointLeft.position, attackRange, playerLayers);
                 foreach(Collider2D player in hitPlayers){
                     Debug.Log("hit player behind");
+                    FindObjectOfType<AudioManager>().Play("EnemyAttack");
                     if(player.GetComponent<HeroKnight>().CheckBlocking(facingDirection)){return;}
                     player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
                 }
@@ -139,11 +141,12 @@ public class EnemyMove : MonoBehaviour
 
     void Die(){
         Debug.Log("dead");
+        if(!isDead){
+            GameObject.FindWithTag("Player").GetComponent<HeroKnight>().GainHealth(healthBounty);
+        }
         isDead = true;
         animator.SetBool("IsDead", true);
-
-        GameObject.FindWithTag("Player").GetComponent<HeroKnight>().GainHealth(healthBounty);
-
+        FindObjectOfType<AudioManager>().Play("SkeletonDeath");
         //GetComponent<Collider2D>().enabled = false;
         Destroy(this.gameObject, .55f);
         this.enabled = false;

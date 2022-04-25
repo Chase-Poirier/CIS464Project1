@@ -51,6 +51,7 @@ public class HeroKnight : MonoBehaviour {
     {
         currentHealth = healthSO.Value;
         healthBar.SetMaxHealth(maxHealth);
+        healthBar.SetHealth(currentHealth);
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
         m_groundSensor = transform.Find("GroundSensor").GetComponent<Sensor_HeroKnight>();
@@ -160,12 +161,19 @@ public class HeroKnight : MonoBehaviour {
         {
             m_animator.SetTrigger("Block");
             m_animator.SetBool("IdleBlock", true);
+            
             m_blocking = true;
         }
 
         else if (Input.GetKeyUp("k")){
             m_animator.SetBool("IdleBlock", false);
             m_blocking = false;
+        }
+
+        //"DEBUG"
+        else if (Input.GetKeyUp("p")){
+            currentHealth = 100;
+            healthBar.SetHealth(currentHealth);
         }
 
         // Roll
@@ -182,6 +190,7 @@ public class HeroKnight : MonoBehaviour {
         {
             m_animator.SetTrigger("Jump");
             m_grounded = false;
+            FindObjectOfType<AudioManager>().Play("Jump");
             m_animator.SetBool("Grounded", m_grounded);
             m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
             m_groundSensor.Disable(0.2f);
@@ -286,6 +295,7 @@ public class HeroKnight : MonoBehaviour {
 
     public bool CheckBlocking(int facing){
         if(m_facingDirection!=facing && m_blocking){
+            FindObjectOfType<AudioManager>().Play("Block");
             return true;
         } else {
             return false;
@@ -324,6 +334,7 @@ public class HeroKnight : MonoBehaviour {
         isInvincible = false;
     }
     void Attack(){
+        FindObjectOfType<AudioManager>().Play("PlayerAttack");
         if(m_facingDirection == 1){
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
             foreach(Collider2D enemy in hitEnemies){

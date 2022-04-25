@@ -6,9 +6,14 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private IntSO healthSO;
+    private void Start()
+    {
+        FindObjectOfType<AudioManager>().Play("Music");
+        healthSO.Value = 100;
+    }
+
     public void PlayGame() 
     {
-        healthSO.Value = 100;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
