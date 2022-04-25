@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class EnemyMove : MonoBehaviour
 {
+    public bool isDead = false;
     public int moveSpeed = 3;
     public float attackRange = 1.5f;
     public int attackDamage = 20;
@@ -99,6 +100,11 @@ public class EnemyMove : MonoBehaviour
             Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPointRight.position, attackRange, playerLayers);
             foreach(Collider2D player in hitPlayers){
                 Debug.Log("hit player");
+<<<<<<< Updated upstream
+=======
+                FindObjectOfType<AudioManager>().Play("EnemyAttack");
+                if(player.GetComponent<HeroKnight>().CheckBlocking(facingDirection)){return;}
+>>>>>>> Stashed changes
                 player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
                 if(player.GetComponent<HeroKnight>().checkIfDead()){
                     playerHasDied = true;
@@ -109,6 +115,11 @@ public class EnemyMove : MonoBehaviour
             Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPointLeft.position, attackRange, playerLayers);
             foreach(Collider2D player in hitPlayers){
                 Debug.Log("hit player behind");
+<<<<<<< Updated upstream
+=======
+                FindObjectOfType<AudioManager>().Play("EnemyAttack");
+                if (player.GetComponent<HeroKnight>().CheckBlocking(facingDirection)){return;}
+>>>>>>> Stashed changes
                 player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
                 if(player.GetComponent<HeroKnight>().checkIfDead()){
                     playerHasDied = true;
@@ -122,7 +133,8 @@ public class EnemyMove : MonoBehaviour
         currentHealth -= damage;
         animator.SetTrigger("Hurt");
 
-        if (currentHealth<=0){
+        if (currentHealth<=0 && isDead == false){
+            isDead = true;
             Die();
         }
     }
@@ -132,6 +144,7 @@ public class EnemyMove : MonoBehaviour
         animator.SetBool("IsDead", true);
 
         //GetComponent<Collider2D>().enabled = false;
+        FindObjectOfType<AudioManager>().Play("SkeletonDeath");
         Destroy(this.gameObject, .55f);
         this.enabled = false;
     }

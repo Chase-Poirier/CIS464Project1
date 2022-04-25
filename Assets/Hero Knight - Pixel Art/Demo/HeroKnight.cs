@@ -147,6 +147,7 @@ public class HeroKnight : MonoBehaviour {
         else if (Input.GetMouseButtonDown(1) && !m_rolling)
         {
             m_animator.SetTrigger("Block");
+            FindObjectOfType<AudioManager>().Play("Block");
             m_animator.SetBool("IdleBlock", true);
         }
 
@@ -167,6 +168,7 @@ public class HeroKnight : MonoBehaviour {
         {
             m_animator.SetTrigger("Jump");
             m_grounded = false;
+            FindObjectOfType<AudioManager>().Play("Jump");
             m_animator.SetBool("Grounded", m_grounded);
             m_body2d.velocity = new Vector2(m_body2d.velocity.x, m_jumpForce);
             m_groundSensor.Disable(0.2f);
@@ -278,6 +280,7 @@ public class HeroKnight : MonoBehaviour {
         isInvincible = false;
     }
     void Attack(){
+        FindObjectOfType<AudioManager>().Play("PlayerAttack");
         if(m_facingDirection == 1){
             Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayers);
             foreach(Collider2D enemy in hitEnemies){
