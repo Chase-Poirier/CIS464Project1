@@ -11,6 +11,9 @@ public class HeroKnight : MonoBehaviour {
     [SerializeField] GameObject m_slideDust;
     [SerializeField] private float invincibilityDurationSeconds =0.75f;
     [SerializeField] private float invincibilityDeltaTime =0.15f;
+
+    [SerializeField] private IntSO healthSO;
+
     private Animator            m_animator;
     private Rigidbody2D         m_body2d;
     private Sensor_HeroKnight   m_groundSensor;
@@ -46,7 +49,7 @@ public class HeroKnight : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        currentHealth = maxHealth;
+        currentHealth = healthSO.Value;
         healthBar.SetMaxHealth(maxHealth);
         m_animator = GetComponent<Animator>();
         m_body2d = GetComponent<Rigidbody2D>();
@@ -233,6 +236,7 @@ public class HeroKnight : MonoBehaviour {
             }
         }
         if(col.gameObject.tag == "Transition"){
+            healthSO.Value = currentHealth;
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
     }

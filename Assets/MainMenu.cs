@@ -5,8 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    [SerializeField] private IntSO healthSO;
     public void PlayGame() 
     {
+        healthSO.Value = 100;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 

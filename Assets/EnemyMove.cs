@@ -8,7 +8,7 @@ public class EnemyMove : MonoBehaviour
     public float attackRange = 1.5f;
     public int attackDamage = 20;
     private float timeSinceAttack = 0.0f;
-    private float attackDelay = 0.2f;
+    private float attackDelay = 0.15f;
     private int facingDirection = 1;
     private int healthBounty = 30;
     [SerializeField] Transform playerTransform;
@@ -23,6 +23,7 @@ public class EnemyMove : MonoBehaviour
     public float followRadius = 5.0f;
     int currentHealth;
 
+    private bool isDead = false;
     private bool playerHasDied = false;
 
     void Start()
@@ -42,12 +43,13 @@ public class EnemyMove : MonoBehaviour
                     playerHasDied = true;
         }
         timeSinceAttack += Time.deltaTime;
-        if (checkFollowRadius(playerTransform.position.x,transform.position.x))
+        if (checkFollowRadius(playerTransform.position.x,transform.position.x)&& Mathf.Abs(playerTransform.position.y - transform.position.y) <1.5f )
         {
             //if player in front of the enemies
             if (playerTransform.position.x < transform.position.x)
             {
-
+                enemySR.flipX = true;
+                facingDirection = -1;
                 if (checkAttackRadius(playerTransform.position.x, transform.position.x))
                 {
                     //for attack animation
@@ -66,14 +68,14 @@ public class EnemyMove : MonoBehaviour
                     //enemyAnim.SetBool("Attack", false);
                     //walk
                     enemyAnim.SetBool("IsWalking", true);
-                    enemySR.flipX = true;
-                    facingDirection = -1;
                 }
 
             }
             //if player is behind enemies
             else if(playerTransform.position.x > transform.position.x)
             {
+                enemySR.flipX = false;
+                facingDirection = 1;
                 if (checkAttackRadius(playerTransform.position.x, transform.position.x))
                 {
                     //for attack animation
@@ -92,8 +94,6 @@ public class EnemyMove : MonoBehaviour
                     //enemyAnim.SetBool("Attack", false);
                     //walk
                     enemyAnim.SetBool("IsWalking", true);
-                    enemySR.flipX = false;
-                    facingDirection = 1;
                 }
             }
         }
@@ -103,20 +103,22 @@ public class EnemyMove : MonoBehaviour
         }
     }
     void Attack(){
-        if(facingDirection == 1){
-            Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPointRight.position, attackRange, playerLayers);
-            foreach(Collider2D player in hitPlayers){
-                Debug.Log("hit player");
-                if(player.GetComponent<HeroKnight>().CheckBlocking(facingDirection)){return;}
-                player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
-                
-            }
-        } else if(facingDirection == -1){
-            Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPointLeft.position, attackRange, playerLayers);
-            foreach(Collider2D player in hitPlayers){
-                Debug.Log("hit player behind");
-                if(player.GetComponent<HeroKnight>().CheckBlocking(facingDirection)){return;}
-                player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
+        if(!isDead){
+            if(facingDirection == 1){
+                Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPointRight.position, attackRange, playerLayers);
+                foreach(Collider2D player in hitPlayers){
+                    Debug.Log("hit player");
+                    if(player.GetComponent<HeroKnight>().CheckBlocking(facingDirection)){return;}
+                    player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
+                    
+                }
+            } else if(facingDirection == -1){
+                Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPointLeft.position, attackRange, playerLayers);
+                foreach(Collider2D player in hitPlayers){
+                    Debug.Log("hit player behind");
+                    if(player.GetComponent<HeroKnight>().CheckBlocking(facingDirection)){return;}
+                    player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
+                }
             }
         }
     }
@@ -137,6 +139,7 @@ public class EnemyMove : MonoBehaviour
 
     void Die(){
         Debug.Log("dead");
+        isDead = true;
         animator.SetBool("IsDead", true);
 
         GameObject.FindWithTag("Player").GetComponent<HeroKnight>().GainHealth(healthBounty);

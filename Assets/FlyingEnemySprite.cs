@@ -20,6 +20,8 @@ public class FlyingEnemySprite : MonoBehaviour
     SpriteRenderer enemySR;
     public Transform attackPoint;
 
+    private bool isDead = false;
+
     [SerializeField] Transform playerTransform;
     private bool playerHasDied = false;
 
@@ -64,12 +66,13 @@ public class FlyingEnemySprite : MonoBehaviour
     }
 
     void Attack(){
-        Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayers);
-        foreach(Collider2D player in hitPlayers){
-            Debug.Log("hit player");
-            if(player.GetComponent<HeroKnight>().CheckBlocking(facingDirection)){return;}
-            player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
-            
+        if(!isDead){
+            Collider2D[] hitPlayers = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, playerLayers);
+            foreach(Collider2D player in hitPlayers){
+                Debug.Log("hit player");
+                if(player.GetComponent<HeroKnight>().CheckBlocking(facingDirection)){return;}
+                player.GetComponent<HeroKnight>().LoseHealth(attackDamage);
+            }
         }
     }
 
@@ -89,6 +92,7 @@ public class FlyingEnemySprite : MonoBehaviour
 
     void Die(){
         Debug.Log("dead");
+        isDead = true;
         animator.SetBool("IsDead", true);
         GameObject.FindWithTag("Player").GetComponent<HeroKnight>().GainHealth(healthBounty);
         //GetComponent<Collider2D>().enabled = false;

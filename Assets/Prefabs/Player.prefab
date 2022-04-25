@@ -181,6 +181,7 @@ MonoBehaviour:
   m_slideDust: {fileID: 1038168246061390451, guid: 8b8c8cc6774fb074cb9139cc631b108e, type: 3}
   invincibilityDurationSeconds: 0.75
   invincibilityDeltaTime: 0.15
+  healthSO: {fileID: 11400000, guid: e6e613562bf8cdb489cd762531332dc6, type: 2}
   attackPoint: {fileID: 1726048584191865825}
   attackPointBehind: {fileID: 1726048582946010957}
   attackRange: 0.5
@@ -189,6 +190,7 @@ MonoBehaviour:
     m_Bits: 64
   attackDamage: 35
   maxHealth: 100
+  healthBar: {fileID: 0}
 --- !u!95 &3687911269414441920
 Animator:
   serializedVersion: 3

@@ -903,6 +903,63 @@ TilemapCollider2D:
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0.00001
+--- !u!1001 &461951006
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3891990647985258587, guid: 1cbf25716c6380d4483ac99ced7f3eb3, type: 3}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3891990647985258587, guid: 1cbf25716c6380d4483ac99ced7f3eb3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.26
+      objectReference: {fileID: 0}
+    - target: {fileID: 3891990647985258587, guid: 1cbf25716c6380d4483ac99ced7f3eb3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3891990647985258587, guid: 1cbf25716c6380d4483ac99ced7f3eb3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3891990647985258587, guid: 1cbf25716c6380d4483ac99ced7f3eb3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3891990647985258587, guid: 1cbf25716c6380d4483ac99ced7f3eb3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3891990647985258587, guid: 1cbf25716c6380d4483ac99ced7f3eb3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3891990647985258587, guid: 1cbf25716c6380d4483ac99ced7f3eb3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3891990647985258587, guid: 1cbf25716c6380d4483ac99ced7f3eb3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3891990647985258587, guid: 1cbf25716c6380d4483ac99ced7f3eb3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3891990647985258587, guid: 1cbf25716c6380d4483ac99ced7f3eb3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3891990647985258590, guid: 1cbf25716c6380d4483ac99ced7f3eb3, type: 3}
+      propertyPath: m_Name
+      value: LevelTransition
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1cbf25716c6380d4483ac99ced7f3eb3, type: 3}
 --- !u!1 &501338081
 GameObject:
   m_ObjectHideFlags: 0
@@ -1261,7 +1318,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1631323935566494411, guid: aa400046bc7a48742ba2f0fb01389cb6, type: 3}
       propertyPath: showNavGraphs
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1631323935566494412, guid: aa400046bc7a48742ba2f0fb01389cb6, type: 3}
       propertyPath: m_Name
