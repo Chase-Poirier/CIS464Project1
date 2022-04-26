@@ -92,9 +92,11 @@ public class FlyingEnemySprite : MonoBehaviour
 
     void Die(){
         Debug.Log("dead");
+        if(!isDead){
+            GameObject.FindWithTag("Player").GetComponent<HeroKnight>().GainHealth(healthBounty);
+        }
         isDead = true;
         animator.SetBool("IsDead", true);
-        GameObject.FindWithTag("Player").GetComponent<HeroKnight>().GainHealth(healthBounty);
         //GetComponent<Collider2D>().enabled = false;
         Destroy(transform.parent.gameObject, .55f);
         //this.parent.enabled = false;

@@ -9,8 +9,12 @@ public class DeathPlane : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        player.transform.position = respawnpoint.transform.position;
-        player.GetComponent<HeroKnight>().LoseHealth(30);
+        if(other.gameObject.tag == "Player"){
+            player.GetComponent<HeroKnight>().LoseHealth(30);
+            if(!GameObject.FindWithTag("Player").GetComponent<HeroKnight>().checkIfDead()){
+                player.transform.position = respawnpoint.transform.position;
+            }
+        }
     }
 
 
