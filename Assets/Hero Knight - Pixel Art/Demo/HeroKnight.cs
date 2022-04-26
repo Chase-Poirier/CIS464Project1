@@ -182,6 +182,7 @@ public class HeroKnight : MonoBehaviour {
             m_rolling = true;
             m_blocking = false;
             m_animator.SetTrigger("Roll");
+            FindObjectOfType<AudioManager>().Play("Roll");
             m_body2d.velocity = new Vector2(m_facingDirection * m_rollForce, m_body2d.velocity.y);
         }  
 
